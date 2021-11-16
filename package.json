@@ -1,7 +1,7 @@
 {
   "name": "@rmw/mdbx",
   "author": "Kris Zyp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simple, efficient, scalable data store wrapper for libmdbx",
   "license": "MIT",
   "repository": {
