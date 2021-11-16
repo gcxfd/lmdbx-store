@@ -286,7 +286,8 @@ class cursor;
 class cursor_managed;
 
 #if defined(DOXYGEN) ||                                                        \
-    defined(__cpp_lib_memory_resource) && __cpp_lib_memory_resource >= 201603L
+    (defined(__cpp_lib_memory_resource) &&                                     \
+     __cpp_lib_memory_resource >= 201603L && _GLIBCXX_USE_CXX11_ABI)
 /// \brief Default polymorphic allocator for modern code.
 using polymorphic_allocator = ::std::pmr::string::allocator_type;
 #endif /* __cpp_lib_memory_resource >= 201603L */
@@ -3606,8 +3607,7 @@ public:
 
   inline MDBX_error_t put(map_handle map, const slice &key, slice *value,
                           MDBX_put_flags_t flags) noexcept;
-  inline void put(map_handle map, const slice &key, slice value,
-                  put_mode mode) noexcept;
+  inline void put(map_handle map, const slice &key, slice value, put_mode mode);
   inline void insert(map_handle map, const slice &key, slice value);
   inline value_result try_insert(map_handle map, const slice &key, slice value);
   inline slice insert_reserve(map_handle map, const slice &key,
@@ -5166,7 +5166,7 @@ inline MDBX_error_t txn::put(map_handle map, const slice &key, slice *value,
 }
 
 inline void txn::put(map_handle map, const slice &key, slice value,
-                     put_mode mode) noexcept {
+                     put_mode mode) {
   error::success_or_throw(put(map, key, &value, MDBX_put_flags_t(mode)));
 }
 

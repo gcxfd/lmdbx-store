@@ -1,8 +1,6 @@
 ChangeLog
 ---------
 
-## v0.11.x (in development)
-
 ### TODO
 
  - [Engage an "overlapped I/O" on Windows](https://github.com/erthink/libmdbx/issues/224).
@@ -16,8 +14,87 @@ ChangeLog
  - [Support for RAW devices](https://github.com/erthink/libmdbx/issues/124).
  - [Support MessagePack for Keys & Values](https://github.com/erthink/libmdbx/issues/115).
  - [Engage new terminology](https://github.com/erthink/libmdbx/issues/137).
- - Finalize C++ API (few typos and bugs are still maybe for now).
+ - Finalize C++ API (there is still a small chance for a few typos and bugs).
  - Packages for [Astra Linux](https://astralinux.ru/), [ALT Linux](https://www.altlinux.org/), [ROSA Linux](https://www.rosalinux.ru/), etc.
+
+
+## v0.11.2 (underway)
+
+Acknowledgements:
+
+ - [장세연 (Чан Се Ен)](https://github.com/sasgas) for contributing to C++ API.
+
+Minors:
+
+ - Fixed `constexpr`-related macros for legacy compilers.
+ - Allowed to define 'CMAKE_CXX_STANDARD` using an environment variable.
+ - Simplified collection statistics of page operation .
+ - [Fixed](https://github.com/erthink/libmdbx/pull/239) compilation with devtoolset-9 on CentOS/RHEL 7.
+
+
+## v0.11.1 at 2021-10-23
+
+### Backward compatibility break:
+
+The database format signature has been changed to prevent
+forward-interoperability with an previous releases, which may lead to a
+[false positive diagnosis of database corruption](https://github.com/erthink/libmdbx/issues/238)
+due to flaws of an old library versions.
+
+This change is mostly invisible:
+
+ - previously versions are unable to read/write a new DBs;
+ - but the new release is able to handle an old DBs and will silently upgrade ones.
+
+Acknowledgements:
+
+ - [Alex Sharov](https://github.com/AskAlexSharov) for reporting and testing.
+
+
+## v0.10.5 at 2021-10-13 (obsolete, please use v0.11.1)
+
+Unfortunately, the `v0.10.5` accidentally comes not full-compatible with previous releases:
+
+ - `v0.10.5` can read/processing DBs created by previous releases, i.e. the backward-compatibility is provided;
+ - however, previous releases may lead to false-corrupted state with DB that was touched by `v0.10.5`, i.e. the forward-compatibility is broken for `v0.10.4` and earlier.
+
+This cannot be fixed, as it requires fixing past versions, which as a result we will just get a current version.
+Therefore, it is recommended to use `v0.11.1` instead of `v0.10.5`.
+
+Acknowledgements:
+
+ - [Noel Kuntze](https://github.com/Thermi) for immediately bug reporting.
+
+Fixes:
+
+ - Fixed unaligned access regression after the `#pragma pack` fix for modern compilers.
+ - Added UBSAN-test to CI to avoid a regression(s) similar to lately fixed.
+ - Fixed possibility of meta-pages clashing after manually turn to a particular meta-page using `mdbx_chk` utility.
+
+Minors:
+
+ - Refined handling of weak or invalid meta-pages while a DB opening.
+ - Refined providing information for the @MAIN and @GC sub-databases of a last committed modification transaction's ID.
+
+
+## v0.10.4 at 2021-10-10
+
+Acknowledgements:
+
+ - [Artem Vorotnikov](https://github.com/vorot93) for support [Rust wrapper](https://github.com/vorot93/mdbx-rs).
+ - [Andrew Ashikhmin](https://github.com/yperbasis) for contributing to C++ API.
+
+Fixes:
+
+ - Fixed possibility of looping update GC during transaction commit (no public issue since the problem was discovered inside [Positive Technologies](https://www.ptsecurity.ru)).
+ - Fixed `#pragma pack` to avoid provoking some compilers to generate code with [unaligned access](https://github.com/erthink/libmdbx/issues/235).
+ - Fixed `noexcept` for potentially throwing `txn::put()` of C++ API.
+
+Minors:
+
+ - Added stochastic test script for checking small transactions cases.
+ - Removed extra transaction commit/restart inside test framework.
+ - In debugging builds fixed a too small (single page) by default DB shrink threshold.
 
 
 ## v0.10.3 at 2021-08-27
